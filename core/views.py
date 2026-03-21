@@ -495,7 +495,7 @@ def export_request_pdf(request, pk):
         canvas.drawRightString(width-40, 30, f"Generated: {req.created_at.strftime('%d/%m/%Y')}")
 
         # QR Code
-        verify_url = f"https://pfp-w52b.onrender.com/request-file/{req.id}/"
+        verify_url = f"https://pfp-approvals.onrender.com/request-file/{req.id}/"
 
         qr_code = qr.QrCodeWidget(verify_url)
 
