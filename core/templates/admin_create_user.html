@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}สร้างผู้ใช้{% endblock %}
+{% block content %}
+
+<div class="card p-4">
+    <h4>สร้างผู้ใช้ใหม่</h4>
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label>ชื่อผู้ใช้</label>
+            <input name="username" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label>รหัสผ่าน</label>
+            <input type="password" name="password"
+                   class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label>หน้าที่</label>
+            <select name="role" class="form-control">
+                <option value="EMPLOYEE">Employee</option>
+                <option value="APPROVER">Approver</option>
+                <option value="ADMIN">Admin</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>แผนก</label>
+            <select name="department" class="form-control">
+                <option value="">-- ไม่ระบุ --</option>
+                {% for d in departments %}
+                <option value="{{ d.id }}">{{ d.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button class="btn btn-primary">
+            สร้างผู้ใช้
+        </button>
+    </form>
+</div>
+
+{% endblock %}

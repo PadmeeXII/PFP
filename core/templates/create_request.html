@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+
+        <div class="card shadow-lg border-0">
+            <div class="card-header text-white"
+                 style="background: linear-gradient(90deg,#1f4e79,#4e73df);">
+                <h5 class="mb-0">สร้างคำขอใหม่</h5>
+            </div>
+
+            <div class="card-body p-4">
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">หัวข้อคำขอ</label>
+                        <input type="text" name="title"
+                               class="form-control form-control-lg"
+                               placeholder="ใส่หัวข้อคำขอตรงนี้" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">รายละเอียดคำขอ</label>
+                        <textarea name="description"
+                                  class="form-control"
+                                  rows="4"
+                                  placeholder="อธิบายคำขอของคุณตรงนี้"></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">ไฟล์แนบ</label>
+                        <input type="file"
+                               name="file"
+                               class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>ผู้อนุมัติคนที่ 1</label>
+                        <select name="approver1" class="form-control">
+                            {% for a in approvers %}
+                            <option value="{{ a.id }}">
+                                {{ a.first_name }} {{ a.last_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>ผู้อนุมัติคนที่ 2</label>
+                            <select name="approver2" class="form-control">
+                                {% for a in approvers %}
+                                <option value="{{ a.id }}">
+                                    {{ a.first_name }} {{ a.last_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                    </div>
+                    <div class="text-end">
+                        <a href="{% url 'request_list' %}"
+                           class="btn btn-outline-secondary me-2">
+                            ยกเลิก
+                        </a>
+                        <button type="submit"
+                                class="btn text-white px-4"
+                                style="background:#1f4e79;">
+                            สร้างคำขอ
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

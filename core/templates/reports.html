@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h4>รายงานการอนุมัติ</h4>
+
+<form method="get" class="mb-3">
+    <select name="status" class="form-select w-25 d-inline">
+        <option value="">สถานะทั้งหมด</option>
+        <option value="APPROVED">ผ่าน</option>
+        <option value="PENDING">รออนุมัติคนที่ 1</option>
+        <option value="IN_PROGRESS">รออนุมัติคนที่ 2</option>
+        <option value="REJECTED">ไม่ผ่าน</option>
+    </select>
+    <button class="btn btn-primary">ค้นหา</button>
+    <a href="{% url 'export_csv' %}" class="btn btn-success">ส่งออกรายงาน</a>
+</form>
+
+<div class="card shadow">
+    <div class="card-body">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>หัวข้อ</th>
+                <th>สถานะ</th>
+                <th>วันที่</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for r in requests %}
+            <tr>
+                <td>PR-{{ r.id|stringformat:"05d" }}</td>
+                <td>{{ r.title }}</td>
+                <td>{{ r.status }}</td>
+                <td>{{ r.created_at|date:"d/m/Y" }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

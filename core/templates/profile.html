@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}โปรไฟล์ของฉัน{% endblock %}
+{% block content %}
+
+<div class="card p-4">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col-md-4 text-center">
+                {% if user.picture %}
+                    <img src="{{ user.picture.url }}"
+                         class="rounded-circle mb-3"
+                         width="150" height="150">
+                {% else %}
+                    <img src="https://ui-avatars.com/api/?name={{ user.username }}"
+                         class="rounded-circle mb-3">
+                {% endif %}
+            </div>
+
+            <div class="col-md-8">
+                <div class="col-md-6 mb-3">
+                <label>ชื่อผู้ใช้</label>
+                <input name="username" class="form-control"
+                       value="{{ user.username }}">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>รหัสผ่านใหม่ (ถ้าไม่อยากเปลี่ยนให้เว้นว่าง)</label>
+                    <input type="password" name="password1" class="form-control">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>ยืนยันรหัสผ่าน</label>
+                    <input type="password" name="password2" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label>ชื่อ</label>
+                    <input class="form-control"
+                           name="first_name"
+                           value="{{ user.first_name }}">
+                </div>
+
+                <div class="mb-3">
+                    <label>นามสกุล</label>
+                    <input class="form-control"
+                           name="last_name"
+                           value="{{ user.last_name }}">
+                </div>
+
+                <div class="mb-3">
+                    <label>เบอร์โทรศัพท์</label>
+                    <input class="form-control"
+                           name="phone"
+                           value="{{ user.phone }}">
+                </div>
+
+                <div class="mb-3">
+                    <label>รูปโปรไฟล์</label>
+                    <input type="file"
+                           class="form-control"
+                           name="picture">
+                </div>
+
+                <button class="btn btn-success">
+                    บันทึก
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

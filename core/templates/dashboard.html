@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h3 class="mb-4">แดชบอร์ด</h3>
+
+<div class="row mb-4">
+
+  <div class="col-md-3">
+    <div class="card text-white shadow p-3"
+         style="background: linear-gradient(45deg,#274277,#4e73df);">
+      <div class="card-body">
+        <h6>รอดำเนินการ</h6>
+        <h2>{{ pending }}</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+  <div class="card text-white shadow p-3"
+         style="background: linear-gradient(45deg,#066445,#1cc88a);">
+      <div class="card-body">
+        <h6>ผ่านแล้ว</h6>
+        <h2>{{ approved }}</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card text-white shadow p-3"
+         style="background: linear-gradient(45deg,#742526,#e74a3b);">
+      <div class="card-body">
+        <h6>ไม่ผ่าน</h6>
+        <h2>{{ rejected }}</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card text-white shadow p-3"
+         style="background: linear-gradient(45deg,#236577,#36b9cc);">
+      <div class="card-body">
+        <h6>กำลังดำเนินการ</h6>
+        <h2>{{ in_progress }}</h2>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="row">
+
+  <!-- Recent Requests -->
+  <div class="col-md-7">
+    <div class="card shadow">
+      <div class="card-header bg-white fw-bold">
+        คำขออนุมัติล่าสุด
+      </div>
+      <div class="card-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>หัวข้อ</th>
+              <th>สถานะ</th>
+              <th>วันที่</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for req in recent %}
+            <tr>
+              <td>PR-{{ req.id|stringformat:"05d" }}</td>
+              <td>{{ req.title }}</td>
+              <td>
+                {% if req.status == 'PENDING' %}
+                  <span class="badge bg-warning text-dark">รออนุมัติขั้นที่ 1</span>
+                {% elif req.status == 'APPROVED' %}
+                  <span class="badge bg-success">ผ่าน</span>
+                {% elif req.status == 'REJECTED' %}
+                  <span class="badge bg-danger">ไม่ผ่าน</span>
+                {% else %}
+                  <span class="badge bg-info">รออนุมัติขั้นที่ 2</span>
+                {% endif %}
+              </td>
+              <td>{{ req.created_at|date:"d/m/Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-center">ไม่มีคำขอ</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Donut Chart -->
+  <div class="col-md-5">
+    <div class="card shadow">
+      <div class="card-header bg-white fw-bold">
+        สถิติการอนุมัติ
+      </div>
+      <div class="card-body">
+        <canvas id="approvalChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<script>
+const ctx = document.getElementById('approvalChart');
+
+new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['ผ่านแล้ว', 'รอดำเนินการ', 'ไม่ผ่าน', 'กำลังดำเนินการ'],
+        datasets: [{
+            data: [{{ approved }}, {{ pending }}, {{ rejected }}, {{ in_progress }}],
+            backgroundColor: [
+                '#1cc88a',
+                '#4e73df',
+                '#e74a3b',
+                '#36b9cc'
+            ]
+        }]
+    },
+});
+</script>
+
+{% endblock %}

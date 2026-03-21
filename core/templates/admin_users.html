@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="d-flex justify-content-between mb-3">
+    <h4>จัดการผู้ใช้งานระบบ</h4>
+    <a href="{% url 'create_user' %}" class="btn btn-primary">
+        + เพิ่มผู้ใช้
+    </a>
+</div>
+
+<div class="card p-3">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>ชื่อผู้ใช้</th>
+                <th>หน้าที่</th>
+                <th>แผนก</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in users %}
+            <tr>
+                <td>{{ u.username }}</td>
+                <td>{{ u.role }}</td>
+                <td>{{ u.department }}</td>
+                <td>
+                    <a href="{% url 'edit_user' u.id %}"
+                       class="btn btn-sm btn-outline-primary">
+                        แก้ไข
+                    </a>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-danger"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal{{ u.id }}">
+                        ลบ
+                    </button>
+            </tr>
+<div class="modal fade" id="deleteModal{{ u.id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">ยืนยันการลบ</h5>
+      </div>
+      <div class="modal-body">
+        ต้องการลบ {{ u.username }} หรือไม่?
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+        <a href="{% url 'delete_user' u.id %}"
+           class="btn btn-danger">
+           ยืนยัน
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

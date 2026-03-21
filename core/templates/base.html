@@ -1,0 +1,373 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+<title>P.F.P. Approval System</title>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="icon" href="{% static 'icon/pfp.ico' %}">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+:root{
+--sidebar-bg:#1f4e79;
+--topbar-bg:#173a5c;
+--main-bg:#f4f6f9;
+--card-bg:#ffffff;
+--text-color:#333;
+}
+
+/* BODY */
+
+body{
+background:var(--main-bg);
+font-family:'Segoe UI',sans-serif;
+}
+
+/* TOPBAR */
+
+.topbar{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:65px;
+background:var(--topbar-bg);
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 20px;
+color:white;
+z-index:1000;
+box-shadow:0 2px 10px rgba(0,0,0,0.2);
+}
+
+.topbar-left{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.company-logo{
+width:38px;
+background:white;
+padding:4px;
+border-radius:6px;
+}
+
+.company-name{
+font-weight:600;
+font-size:15px;
+}
+
+.page-title{
+font-size:20px;
+font-weight:600;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:240px;
+height:100vh;
+position:fixed;
+left:0;
+top:65px;
+background:var(--sidebar-bg);
+padding-top:10px;
+overflow-y:auto;
+transition:0.3s;
+}
+
+.sidebar a{
+color:white;
+display:flex;
+align-items:center;
+gap:10px;
+padding:12px 20px;
+text-decoration:none;
+transition:0.2s;
+font-size:15px;
+}
+
+.sidebar a:hover{
+background:rgba(255,255,255,0.12);
+transform:translateX(6px);
+}
+
+.sidebar a.active{
+background:rgba(255,255,255,0.2);
+font-weight:600;
+}
+
+.sidebar a i{
+font-size:18px;
+}
+
+/* COLLAPSE */
+
+.sidebar.collapsed{
+left:-240px;
+}
+
+/* MAIN */
+
+.main-content{
+margin-left:240px;
+margin-top:65px;
+padding:25px;
+transition:0.3s;
+}
+
+.main-content.full{
+margin-left:0;
+}
+
+/* CARD */
+
+.card{
+border:none;
+border-radius:15px;
+background:var(--card-bg);
+box-shadow:0 8px 20px rgba(0,0,0,0.08);
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-4px);
+}
+
+/* TABLE */
+
+.table tbody tr:hover{
+background:rgba(0,0,0,0.05);
+cursor:pointer;
+}
+
+/* USER */
+
+.user-profile{
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+/* OVERLAY MOBILE */
+
+.overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.4);
+z-index:900;
+display:none;
+}
+
+.overlay.show{
+display:block;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.sidebar{
+left:-240px;
+}
+
+.sidebar.show{
+left:0;
+}
+
+.main-content{
+margin-left:0;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- TOPBAR -->
+
+<div class="topbar">
+
+<div class="topbar-left">
+
+<button class="btn btn-sm btn-light" onclick="toggleSidebar()">
+<i class="bi bi-list"></i>
+</button>
+
+<img src="{% static 'icon/pfp.png' %}" class="company-logo">
+
+<div class="company-name">
+P.F.P Design & Construct Co., Ltd.
+</div>
+
+</div>
+
+<div class="page-title">
+{% block title %}{% endblock %}
+</div>
+
+<div class="dropdown">
+
+<div class="user-profile dropdown-toggle" data-bs-toggle="dropdown">
+
+<i class="bi bi-person-circle fs-5"></i>
+
+<span>{{ request.user.username }}</span>
+
+</div>
+
+<ul class="dropdown-menu dropdown-menu-end">
+
+<li>
+<a class="dropdown-item" href="/profile/">
+<i class="bi bi-person"></i> โปรไฟล์
+</a>
+</li>
+
+<li><hr class="dropdown-divider"></li>
+
+<li>
+
+<form method="post" action="{% url 'logout' %}">
+{% csrf_token %}
+<button type="submit" class="dropdown-item">
+<i class="bi bi-box-arrow-right"></i> ออกจากระบบ
+</button>
+</form>
+
+</li>
+
+</ul>
+
+</div>
+
+</div>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar" id="sidebar">
+
+<a href="/" class="{% if request.path == '/' %}active{% endif %}">
+<i class="bi bi-speedometer2"></i>
+แดชบอร์ด
+</a>
+
+<a href="/requests/" class="{% if '/requests' in request.path %}active{% endif %}">
+<i class="bi bi-file-earmark-text"></i>
+คำขออนุมัติ
+
+{% if pending_notifications > 0 %}
+<span class="badge bg-danger rounded-pill ms-auto">
+{{ pending_notifications }}
+</span>
+{% endif %}
+
+</a>
+
+<a href="/reports/" class="{% if '/reports' in request.path %}active{% endif %}">
+<i class="bi bi-bar-chart"></i>
+รายงาน
+</a>
+
+{% if request.user.role == 'ADMIN' %}
+
+<a href="{% url 'manage_users' %}">
+<i class="bi bi-people"></i>
+จัดการผู้ใช้
+</a>
+
+<a href="{% url 'manage_departments' %}">
+<i class="bi bi-building"></i>
+จัดการแผนก
+</a>
+
+{% endif %}
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main-content" id="mainContent">
+
+{% block content %}{% endblock %}
+
+</div>
+
+<!-- TOAST MESSAGE -->
+
+{% if messages %}
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index:999">
+
+{% for message in messages %}
+
+<div class="toast show align-items-center text-bg-{{ message.tags }} border-0 mb-2">
+
+<div class="d-flex">
+
+<div class="toast-body">
+{{ message }}
+</div>
+
+<button class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+function toggleSidebar(){
+
+let sidebar=document.getElementById("sidebar");
+let overlay=document.getElementById("overlay");
+let main=document.getElementById("mainContent");
+
+if(window.innerWidth<768){
+
+sidebar.classList.toggle("show");
+overlay.classList.toggle("show");
+
+}else{
+
+sidebar.classList.toggle("collapsed");
+main.classList.toggle("full");
+
+}
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}จัดการแผนก{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between mb-3">
+    <h4>แผนกทั้งหมด</h4>
+    <a href="{% url 'create_department' %}" class="btn btn-primary">
+        + เพิ่ทแผนกใหม่
+    </a>
+</div>
+
+<div class="card p-3">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>ชื่อแผนก</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for d in departments %}
+            <tr>
+                <td>{{ d.name }}</td>
+                <td>
+                    <a href="{% url 'edit_department' d.id %}"
+                        class="btn btn-sm btn-warning">
+                        แก้ไข
+                    </a>
+                    <button class="btn btn-sm btn-danger"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal{{ d.id }}">
+                        ลบ
+                    </button>
+                </td>
+            </tr>
+<div class="modal fade" id="deleteModal{{ u.id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">ยืนยันการลบ</h5>
+      </div>
+      <div class="modal-body">
+        ต้องการลบ {{ d.name }} หรือไม่?
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+        <a href="{% url 'delete_department' d.id %}"
+            class="btn btn-sm btn-danger">
+            ยืนยัน
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}จัดการผู้ใช้{% endblock %}
+{% block content %}
+
+<div class="card p-4">
+    <h4>แก้ไขผู้ใช้: {{ user_obj.username }}</h4>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label>หน้าที่</label>
+            <select name="role" class="form-control">
+                <option value="EMPLOYEE"
+                    {% if user_obj.role == 'EMPLOYEE' %}selected{% endif %}>
+                    Employee
+                </option>
+                <option value="APPROVER"
+                    {% if user_obj.role == 'APPROVER' %}selected{% endif %}>
+                    Approver
+                </option>
+                <option value="ADMIN"
+                    {% if user_obj.role == 'ADMIN' %}selected{% endif %}>
+                    Admin
+                </option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>แผนก</label>
+            <select name="department" class="form-control">
+                <option value="">-- ไม่ระบุ --</option>
+                {% for d in departments %}
+                <option value="{{ d.id }}"
+                {% if user_obj.department and user_obj.department.id == d.id %}
+                เลือก
+                {% endif %}>
+                    {{ d.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button class="btn btn-success">
+            บันทึก
+        </button>
+    </form>
+</div>
+
+{% endblock %}

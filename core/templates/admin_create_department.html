@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}สร้างแผนก{% endblock %}
+{% block content %}
+
+<div class="card p-4">
+    <h4>สร้างแผนกใหม่</h4>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label>ชื่อแผนก</label>
+            <input name="name" class="form-control" required>
+        </div>
+
+        <button class="btn btn-success">
+            สร้าง
+        </button>
+    </form>
+</div>
+
+{% endblock %}
