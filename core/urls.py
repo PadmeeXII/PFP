@@ -21,4 +21,5 @@ urlpatterns = [
     path('management/departments/delete/<int:pk>/', views.delete_department, name='delete_department'),
     path('management/departments/edit/<int:pk>/', views.edit_department, name='edit_department'),
     path("request-file/<int:pk>/", views.open_request_file, name="open_request_file")
+    path("ping/", views.ping),
 ]

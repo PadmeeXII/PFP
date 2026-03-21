@@ -536,3 +536,7 @@ def open_request_file(request, pk):
     mime_type, _ = mimetypes.guess_type(file_path)
 
     return FileResponse(req.file, content_type=mime_type)
+
+
+def ping(request):
+    return HttpResponse("OK")
