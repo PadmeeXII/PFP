@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 
+
 urlpatterns = [
     path('', views.dashboard, name='dashboard'),
     path('requests/', views.request_list, name='request_list'),
@@ -20,6 +21,6 @@ urlpatterns = [
     path('management/departments/create/', views.create_department, name='create_department'),
     path('management/departments/delete/<int:pk>/', views.delete_department, name='delete_department'),
     path('management/departments/edit/<int:pk>/', views.edit_department, name='edit_department'),
-    path("request-file/<int:pk>/", views.open_request_file, name="open_request_file")
+    path("request-file/<int:pk>/", views.open_request_file, name="open_request_file"),
     path("ping/", views.ping),
 ]
